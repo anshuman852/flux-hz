@@ -52,4 +52,4 @@ spec:
           namespace: default
           port: 80
   tls:
-    secretName: home-local-tls
+    secretName: nginx-home-local-tls
