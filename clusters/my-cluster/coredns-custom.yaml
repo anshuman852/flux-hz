@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: coredns-custom
+  namespace: kube-system
+data:
+  hz.server: |
+    homelyserver.local:53 {
+        errors
+        cache 30
+        forward . 164.92.214.217
+        hosts {
+          5.75.151.226 nginx.homelyserver.local
+        }
+    }

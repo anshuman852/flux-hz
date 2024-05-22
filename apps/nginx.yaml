@@ -34,3 +34,26 @@ spec:
   ports:
   - port: 80 
     targetPort: 80
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: nginx-ingressroute
+  namespace: default
+spec:
+  entryPoints:
+    - web
+    - websecure
+  routes:
+    - match: HostRegexp(`nginx.homelyserver.local`)
+      kind: Rule
+      services:
+        - name: nginx-service
+          namespace: default
+          port: 80
+  tls:
+    certResolver: selfsigned-issuer
+    domains:
+      - main: homelyserver.local
+        sans:
+          - nginx.homelyserver.local
