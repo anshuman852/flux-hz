@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: firefox
+  namespace: default
+spec:
+  selector:
+    matchLabels:
+      app: firefox
+  template:
+    metadata:
+      labels:
+        app: firefox
+    spec:
+      containers:
+      - name: firefox
+        image: jlesage/firefox
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "200m"
+        volumeMounts:
+        - name: firefox-config
+          mountPath: /config
+        ports:
+        - containerPort: 5800
+      volumes:
+      - name: firefox-config
+        emptyDir: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: firefox-service
+  namespace: default
+spec:
+  selector:
+    app: firefox
+  ports:
+  - port: 5800 
+    targetPort: 5800
