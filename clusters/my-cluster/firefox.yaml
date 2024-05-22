@@ -17,7 +17,7 @@ spec:
         image: jlesage/firefox
         resources:
           limits:
-            memory: "128Mi"
+            memory: "512Mi"
             cpu: "200m"
         volumeMounts:
         - name: firefox-config
