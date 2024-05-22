@@ -1,0 +1,88 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    app.kubernetes.io/instance: traefik
+  name: traefik
+---
+apiVersion: source.toolkit.fluxcd.io/v1beta1
+kind: HelmRepository
+metadata:
+  name: traefik
+  namespace: traefik
+spec:
+  interval: 5m
+  url: https://helm.traefik.io/traefik
+
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: traefik
+  namespace: traefik
+spec:
+  upgrade:
+    remediation:
+      retries: 1
+  targetNamespace: traefik
+  chart:
+    spec:
+      chart: traefik
+      version: v15.2.2
+      reconcileStrategy: ChartVersion
+      sourceRef:
+        kind: HelmRepository
+        name: traefik
+  interval: 1m0s
+  values:    
+      fullnameOverride: traefik
+      externalTrafficPolicy: Local
+      ports:
+        metrics:
+          expose: true
+      deployment:
+        replicas: 1
+        podAnnotations:
+          s2t.ai/scrape: "true"      
+      additional:
+        checkNewVersion: false
+        sendAnonymousUsage: false
+      kubernetes:
+        ingressClass: traefik
+        ingressEndpoint:
+          useDefaultPublishedService: true
+      api:
+        dashboard: true
+      serversTransport:
+        insecureSkipVerify: true
+      pilot:
+        enabled: false
+      experimental:
+        http3:
+          enabled: true
+        plugins:
+          enabled: true         
+      dashboard:
+        enable: true
+        ingressRoute: true
+      ingressRoute:
+        dashboard:
+          enabled: true
+      #     labels:
+      #       source: "template"        
+      rollingUpdate:
+        maxUnavailable: 1
+        maxSurge: 1
+      metrics:
+        prometheus:
+          entryPoint: metrics
+          addServicesLabels: true
+          addEntryPointsLabels: true
+          addRoutersLabels: true
+      service:
+        enabled: true
+        type: LoadBalancer
+      providers:
+        kubernetesingress: {}
+        kubernetesCRD:
+          allowCrossNamespace: true
