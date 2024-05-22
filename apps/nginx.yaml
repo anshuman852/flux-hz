@@ -52,8 +52,4 @@ spec:
           namespace: default
           port: 80
   tls:
-    certResolver: selfsigned-issuer
-    domains:
-      - main: homelyserver.local
-        sans:
-          - nginx.homelyserver.local
+    secretName: home-local-tls
