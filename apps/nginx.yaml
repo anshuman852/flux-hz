@@ -39,7 +39,7 @@ apiVersion: traefik.containo.us/v1alpha1
 kind: IngressRoute
 metadata:
   name: nginx-ingressroute
-  namespace: default
+  namespace: traefik
 spec:
   entryPoints:
     - web
